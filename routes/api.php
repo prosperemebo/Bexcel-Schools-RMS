@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SubjectOfferController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('/v1/students', StudentController::class);
 Route::resource('/v1/grades', GradeController::class);
+Route::resource('/v1/subjects', SubjectController::class);
+Route::resource('/v1/subjects-offered', SubjectOfferController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

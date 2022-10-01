@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->uuid('id', 10)->primary();
-            $table->foreignUuid('grade_id')->references('id')->on('grades');
+            $table->foreignUuid('grade_id')->nullable()->references('id')->on('grades')->nullOnDelete();
             $table->enum('gender', ['male', 'female', 'other']);
             $table->string('admission_number');
             $table->boolean('status')->default(true);

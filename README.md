@@ -1,7 +1,7 @@
 <br>
 <br>
 
-<p align="center" style="background-color: #fff;border-radius: 20px;"><a href="https://bexcel-schools.vercel.app/" target="_blank"><br><img src="https://bexcel-schools.vercel.app/images/logo.png" width="400" alt="Laravel Logo"></a><br></p>
+<p align="center" style="background-color: #fff;border-radius: 20px;"><a href="https://bexcel-schools.vercel.app/" target="_blank"><br><img src="https://bexcel-schools.vercel.app/images/logo.png" width="400" alt="Bexcel Logo"></a><br></p>
 
 <br>
 <br>

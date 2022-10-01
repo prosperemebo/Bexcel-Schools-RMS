@@ -10,7 +10,8 @@ class Grade extends Model
     use HasFactory;
     protected $fillable = [
         'id',
-        'label'
+        'label',
+        'slug'
     ];
 
     protected $casts = [

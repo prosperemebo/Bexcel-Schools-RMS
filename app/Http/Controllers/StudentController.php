@@ -28,39 +28,6 @@ class StudentController extends Controller
         return response($response);
     }
 
-    // {
-    //     "id": 97629,
-    //     "grade_id": 976296,
-    //     "gender": "male",
-    //     "admission_number": "16/AD/BC/024",
-    //     "date_of_birth": "2006-10-11",
-    //     "first_name": "Prosper",
-    //     "last_name": "Castle",
-    //     "other_name": "Chima",
-    //     "created_at": "2022-09-30T00:35:06.000000Z",
-    //     "updated_at": "2022-09-30T00:35:06.000000Z",
-    //     "grade": {
-    //         "id": 976296,
-    //         "label": "JSS1"
-    //     }
-    // },
-    // {
-    //     "id": 9762,
-    //     "grade_id": 976296,
-    //     "gender": "female",
-    //     "admission_number": "16/AD/BC/027",
-    //     "date_of_birth": "2006-10-11",
-    //     "first_name": "Goodness",
-    //     "last_name": "Simon",
-    //     "other_name": "Grace",
-    //     "created_at": "2022-09-30T00:48:29.000000Z",
-    //     "updated_at": "2022-09-30T00:48:29.000000Z",
-    //     "grade": {
-    //         "id": 976296,
-    //         "label": "JSS1"
-    //     }
-    // }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -99,7 +66,16 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        //
+        $student = Student::with('grade:id,label')->get();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'student' => $student
+            ]
+        ];
+
+        return response($response);
     }
 
     /**

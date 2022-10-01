@@ -37,11 +37,15 @@ class GradeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'label' => 'required|string|unique:grades'
+            'label' => 'required|string|unique:grades',
+            'slug' => 'string|unique:grades',
         ]);
 
         $request['id'] = Str::orderedUuid();
 
+        if (!$request->slug) {
+            $request['slug'] = strtolower(str_replace(" ", "-", $request->label));
+        }
 
         $response = [
             'status' => 'success',
@@ -61,7 +65,20 @@ class GradeController extends Controller
      */
     public function show($id)
     {
-        //
+        $grade = Grade::with('students')->where('id', '=', '' . $id)->orWhere('slug', '=', '' . $id)->get();
+
+        if ($grade->isEmpty()) {
+            abort(404, 'Could not find grade with id of \'' . $id . '\'');
+        }
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'grade' => $grade
+            ]
+        ];
+
+        return response($response, 200);
     }
 
     /**
@@ -73,7 +90,21 @@ class GradeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'label' => 'string|unique:grades',
+            'slug' => 'string|unique:grades',
+        ]);
+
+        $grade = Grade::findOrFail($id)->update($request->all());
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'grade' => $grade
+            ]
+        ];
+
+        return response($response, 201);
     }
 
     /**
@@ -84,6 +115,15 @@ class GradeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $grade = Grade::findOrFail($id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'grade' => $grade
+            ]
+        ];
+
+        return response($response, 201);
     }
 }

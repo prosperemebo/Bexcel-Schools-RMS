@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SubjectOffer;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class SubjectOfferController extends Controller
@@ -13,7 +15,16 @@ class SubjectOfferController extends Controller
      */
     public function index()
     {
-        //
+        $subjectsOffered = SubjectOffer::with('student|subject')->get();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'classes' => $subjectsOffered
+            ]
+        ];
+
+        return response($response);
     }
 
     /**
@@ -24,7 +35,23 @@ class SubjectOfferController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // 'required|unique:TableName,column_1,' . $this->id . ',id,colum_2,' . $this->column_2
+
+        $request->validate([
+            'student_id' => 'required|exists:students,id|unique:subject_offers,student_id',
+            'subject_id' => 'required|exists:subjects,id|unique:subject_offers,subject_id',
+        ]);
+
+        $request['id'] = Str::orderedUuid();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'classes' => SubjectOffer::create($request->all())
+            ]
+        ];
+
+        return response($response, 201);
     }
 
     /**
@@ -35,7 +62,16 @@ class SubjectOfferController extends Controller
      */
     public function show($id)
     {
-        //
+        // $subject = Subject::findOrFail($id);
+
+        // $response = [
+        //     'status' => 'success',
+        //     'data' => [
+        //         'subject' => $subject
+        //     ]
+        // ];
+
+        // return response($response, 200);
     }
 
     /**
@@ -47,7 +83,20 @@ class SubjectOfferController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // $request->validate([
+        //     'label' => 'string|unique:subjects',
+        // ]);
+
+        // $subject = Subject::findOrFail($id)->update($request->all());
+
+        // $response = [
+        //     'status' => 'success',
+        //     'data' => [
+        //         'subje$subject' => $subject
+        //     ]
+        // ];
+
+        // return response($response, 201);
     }
 
     /**
@@ -58,6 +107,15 @@ class SubjectOfferController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // $subject = Subject::findOrFail($id)->delete();
+
+        // $response = [
+        //     'status' => 'success',
+        //     'data' => [
+        //         'subject' => $subject
+        //     ]
+        // ];
+
+        // return response($response, 201);
     }
 }

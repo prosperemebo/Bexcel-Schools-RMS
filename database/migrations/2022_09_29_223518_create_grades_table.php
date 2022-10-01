@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('grades', function (Blueprint $table) {
             $table->uuid('id', 10)->primary();
             $table->string('label');
+            $table->string('slug');
             $table->timestamps();
         });
     }

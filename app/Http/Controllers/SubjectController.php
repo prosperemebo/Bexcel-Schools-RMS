@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subject;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SubjectController extends Controller
 {
@@ -13,7 +16,16 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        //
+        $subjects = Subject::all();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'subjects' => $subjects
+            ]
+        ];
+
+        return response($response);
     }
 
     /**
@@ -24,7 +36,20 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'label' => 'required|string|unique:subjects',
+        ]);
+
+        $request['id'] = Str::orderedUuid();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'subject' => Subject::create($request->all())
+            ]
+        ];
+
+        return response($response, 201);
     }
 
     /**
@@ -35,7 +60,16 @@ class SubjectController extends Controller
      */
     public function show($id)
     {
-        //
+        $subject = Subject::findOrFail($id);
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'subject' => $subject
+            ]
+        ];
+
+        return response($response, 200);
     }
 
     /**
@@ -47,7 +81,20 @@ class SubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'label' => 'string|unique:subjects',
+        ]);
+
+        $subject = Subject::findOrFail($id)->update($request->all());
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'subje$subject' => $subject
+            ]
+        ];
+
+        return response($response, 201);
     }
 
     /**
@@ -58,6 +105,15 @@ class SubjectController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $subject = Subject::findOrFail($id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'subject' => $subject
+            ]
+        ];
+
+        return response($response, 201);
     }
 }
