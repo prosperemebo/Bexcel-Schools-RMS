@@ -5,26 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SubjectOffer extends Model
+class AcademicSession extends Model
 {
     use HasFactory;
     protected $fillable = [
         'id',
-        'student_id',
-        'subject_id',
+        'label',
+        'code',
+        'session_year',
+        'next_session_begins'
     ];
 
     protected $casts = [
         'id' => 'string'
     ];
 
-    public function subject()
+    public function score_records()
     {
-        return $this->belongsTo(Subject::class);
-    }
-
-    public function student()
-    {
-        return $this->belongsTo(Student::class);
+        return $this->hasMany(ScoreRecords::class);
     }
 }

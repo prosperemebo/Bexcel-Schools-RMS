@@ -1,10 +1,12 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\SubjectOffer;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SubjectOfferController extends Controller
 {
@@ -15,7 +17,7 @@ class SubjectOfferController extends Controller
      */
     public function index()
     {
-        $subjectsOffered = SubjectOffer::with('student|subject')->get();
+        $subjectsOffered = SubjectOffer::with('student:id,first_name,last_name', 'subject:id,label')->get();
 
         $response = [
             'status' => 'success',
@@ -38,8 +40,15 @@ class SubjectOfferController extends Controller
         // 'required|unique:TableName,column_1,' . $this->id . ',id,colum_2,' . $this->column_2
 
         $request->validate([
-            'student_id' => 'required|exists:students,id|unique:subject_offers,student_id',
-            'subject_id' => 'required|exists:subjects,id|unique:subject_offers,subject_id',
+            'subject_id' => [
+                'required',
+                Rule::unique('subject_offers')->where(function ($query) use ($request) {
+
+                    return $query
+                        ->whereStudentId($request->student_id)
+                        ->whereSubjectId($request->subject_id);
+                }),
+            ],
         ]);
 
         $request['id'] = Str::orderedUuid();

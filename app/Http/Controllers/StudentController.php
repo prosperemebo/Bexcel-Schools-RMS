@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 
 class StudentController extends Controller
 {
@@ -16,13 +16,21 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::with('grade:id,label')->get();
+        $students = Student::with(
+            'grade:id,label'
+        )->select(
+            'id',
+            'grade_id',
+            'first_name',
+            'last_name',
+            'admission_number',
+        )->get();
 
         $response = [
             'status' => 'success',
             'data' => [
-                'students' => $students
-            ]
+                'students' => $students,
+            ],
         ];
 
         return response($response);
@@ -43,7 +51,7 @@ class StudentController extends Controller
             'date_of_birth' => 'required|string',
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'grade_id' => 'required|exists:grades,id'
+            'grade_id' => 'required|exists:grades,id',
         ]);
 
         $request['id'] = Str::orderedUuid();
@@ -51,8 +59,8 @@ class StudentController extends Controller
         $response = [
             'status' => 'success',
             'data' => [
-                'student' => Student::create($request->all())
-            ]
+                'student' => Student::create($request->all()),
+            ],
         ];
 
         return response($response, 201);
@@ -66,13 +74,43 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $student = Student::with('grade:id,label')->get();
+        $student = Student::with('grade:id,label')->get()->firstOrFail();
 
         $response = [
             'status' => 'success',
             'data' => [
-                'student' => $student
-            ]
+                'student' => $student,
+            ],
+        ];
+
+        return response($response);
+    }
+
+    /**
+     * Display the specified resource with subjects.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showSubjects($id)
+    {
+        $student = Student::with(
+            'grade:id,label',
+            'subjectOffers:student_id,subject_id',
+            'subjectOffers.subject:id,label'
+        )->select(
+            'id',
+            'grade_id',
+            'first_name',
+            'last_name',
+            'admission_number',
+        )->get()->firstOrFail();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'student' => $student,
+            ],
         ];
 
         return response($response);

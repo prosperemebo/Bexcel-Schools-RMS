@@ -65,7 +65,7 @@ class GradeController extends Controller
      */
     public function show($id)
     {
-        $grade = Grade::with('students')->where('id', '=', '' . $id)->orWhere('slug', '=', '' . $id)->get();
+        $grade = Grade::with('students')->where('id', '=', '' . $id)->orWhere('slug', '=', '' . $id)->get()->firstOrFail();
 
         if ($grade->isEmpty()) {
             abort(404, 'Could not find grade with id of \'' . $id . '\'');

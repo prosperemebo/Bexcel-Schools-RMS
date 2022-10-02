@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/v1/students/{id}/subjects', [StudentController::class, 'showSubjects']);
 Route::resource('/v1/students', StudentController::class);
+
 Route::resource('/v1/grades', GradeController::class);
 Route::resource('/v1/subjects', SubjectController::class);
 Route::resource('/v1/subjects-offered', SubjectOfferController::class);
