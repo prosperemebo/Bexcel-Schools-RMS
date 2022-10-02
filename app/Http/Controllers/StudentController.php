@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Models\SubjectOffer;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controller;
 
 class StudentController extends Controller
 {
@@ -117,15 +119,99 @@ class StudentController extends Controller
     }
 
     /**
+     * Add subject to the specified resource
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addSubject(Request $request, $id)
+    {
+        $request->merge(['id' => Str::orderedUuid()]);
+        $request->merge(['student_id' => $id]);
+
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'subject_id' => [
+                'required',
+                'exists:subjects,id',
+                Rule::unique('subject_offers')->where(function ($query) use ($request) {
+
+                    return $query
+                        ->whereStudentId($request->student_id)
+                        ->whereSubjectId($request->subject_id);
+                }),
+            ],
+        ]);
+
+        $subject = SubjectOffer::create($request->all());
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'student' => $subject,
+            ],
+        ];
+
+        return response($response);
+    }
+
+    /**
+     * Remove subject from the specified resource
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function removeSubject(Request $request, $id, $subject_id)
+    {
+        $request->merge(['student_id' => $id]);
+        $request->merge(['subject_id' => $subject_id]);
+
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
+
+        $subject = SubjectOffer::where('student_id', '=', '' . $request->student_id)
+            ->where('subject_id', '=', '' . $request->subject_id)->first()->delete();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'student' => $subject,
+            ],
+        ];
+
+        return response($response);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'gender' => 'string|in:male,female,others',
+            'admission_number' => 'string|unique:students',
+            'date_of_birth' => 'string',
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'grade_id' => 'exists:grades,id',
+        ]);
+
+        $student = Student::findOrFail($id)->update($request->all());
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'student' => $student
+            ]
+        ];
+
+        return response($response, 201);
     }
 
     /**
@@ -136,6 +222,15 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $student = Student::findOrFail($id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'student' => $student
+            ]
+        ];
+
+        return response($response, 204);
     }
 }

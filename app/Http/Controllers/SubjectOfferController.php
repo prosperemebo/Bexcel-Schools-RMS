@@ -51,7 +51,7 @@ class SubjectOfferController extends Controller
             ],
         ]);
 
-        $request['id'] = Str::orderedUuid();
+        $request->merge(['id' => Str::orderedUuid()]);
 
         $response = [
             'status' => 'success',
@@ -92,20 +92,12 @@ class SubjectOfferController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $request->validate([
-        //     'label' => 'string|unique:subjects',
-        // ]);
+        $response = [
+            'status' => 'fail',
+            'message' => 'Route not implemented!'
+        ];
 
-        // $subject = Subject::findOrFail($id)->update($request->all());
-
-        // $response = [
-        //     'status' => 'success',
-        //     'data' => [
-        //         'subje$subject' => $subject
-        //     ]
-        // ];
-
-        // return response($response, 201);
+        return response($response, 201);
     }
 
     /**

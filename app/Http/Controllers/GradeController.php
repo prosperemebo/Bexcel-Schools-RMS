@@ -6,6 +6,7 @@ use App\Models\Grade;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Student;
 
 class GradeController extends Controller
 {
@@ -65,11 +66,7 @@ class GradeController extends Controller
      */
     public function show($id)
     {
-        $grade = Grade::with('students')->where('id', '=', '' . $id)->orWhere('slug', '=', '' . $id)->get()->firstOrFail();
-
-        if ($grade->isEmpty()) {
-            abort(404, 'Could not find grade with id of \'' . $id . '\'');
-        }
+        $grade = Grade::with('students:id,grade_id,first_name,last_name,admission_number')->where('id', '=', '' . $id)->orWhere('slug', '=', '' . $id)->get()->firstOrFail();
 
         $response = [
             'status' => 'success',
@@ -108,6 +105,34 @@ class GradeController extends Controller
     }
 
     /**
+     * Update the specified grade to new grade.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function promote(Request $request, $id, $grade_id)
+    {
+        $request->validate([
+            'id' => 'exists:grades,id',
+            'grade_id' => 'exists:grades,id',
+        ]);
+
+        $newgrade = Grade::where('id', '=', '' . $grade_id)->orWhere('slug', '=', '' . $grade_id)->get()->firstOrFail();
+
+        $grade = Student::where('grade_id', $id)->update(['grade_id' => $newgrade->id]);
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'grade' => $grade
+            ]
+        ];
+
+        return response($response, 201);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -124,6 +149,6 @@ class GradeController extends Controller
             ]
         ];
 
-        return response($response, 201);
+        return response($response, 204);
     }
 }
