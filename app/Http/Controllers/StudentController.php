@@ -76,7 +76,7 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $student = Student::with('grade:id,label')->get()->firstOrFail();
+        $student = Student::with('grade:id,label')->findOrFail($id)->get()->firstOrFail();
 
         $response = [
             'status' => 'success',
@@ -96,7 +96,7 @@ class StudentController extends Controller
      */
     public function showSubjects($id)
     {
-        $student = Student::with(
+        $student = Student::findOrFail($id)->with(
             'grade:id,label',
             'subjectOffers:student_id,subject_id',
             'subjectOffers.subject:id,label'

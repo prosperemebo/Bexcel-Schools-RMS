@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('label');
             $table->string('code');
             $table->string('session_year');
-            $table->date('next_session_begins');
+            $table->date('next_session_begins')->nullable();
             $table->timestamps();
         });
     }

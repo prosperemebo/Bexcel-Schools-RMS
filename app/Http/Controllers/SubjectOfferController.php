@@ -71,16 +71,16 @@ class SubjectOfferController extends Controller
      */
     public function show($id)
     {
-        // $subject = Subject::findOrFail($id);
+        $subject = SubjectOffer::findOrFail($id);
 
-        // $response = [
-        //     'status' => 'success',
-        //     'data' => [
-        //         'subject' => $subject
-        //     ]
-        // ];
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'subject' => $subject
+            ]
+        ];
 
-        // return response($response, 200);
+        return response($response, 200);
     }
 
     /**
@@ -108,15 +108,15 @@ class SubjectOfferController extends Controller
      */
     public function destroy($id)
     {
-        // $subject = Subject::findOrFail($id)->delete();
+        $subject = SubjectOffer::findOrFail($id)->delete();
 
-        // $response = [
-        //     'status' => 'success',
-        //     'data' => [
-        //         'subject' => $subject
-        //     ]
-        // ];
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'subject' => $subject
+            ]
+        ];
 
-        // return response($response, 201);
+        return response($response, 201);
     }
 }

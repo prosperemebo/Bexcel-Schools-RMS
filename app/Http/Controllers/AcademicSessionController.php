@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\AcademicSession;
 
 class AcademicSessionController extends Controller
 {
@@ -13,7 +15,16 @@ class AcademicSessionController extends Controller
      */
     public function index()
     {
-        //
+        $sessions = AcademicSession::orderBy('created_at', 'DESC')->get();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'sessions' => $sessions,
+            ],
+        ];
+
+        return response($response);
     }
 
     /**
@@ -24,7 +35,23 @@ class AcademicSessionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'label' => 'required|string|unique:academic_sessions,label',
+            'code' => 'required|string',
+            'session_year' => 'required|string',
+            'next_session_begins' => 'date'
+        ]);
+
+        $request->merge(['id' => Str::orderedUuid()]);
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'session' => AcademicSession::create($request->all()),
+            ],
+        ];
+
+        return response($response, 201);
     }
 
     /**
@@ -35,7 +62,16 @@ class AcademicSessionController extends Controller
      */
     public function show($id)
     {
-        //
+        $session = AcademicSession::findOrFail($id)->get()->firstOrFail();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'session' => $session,
+            ],
+        ];
+
+        return response($response);
     }
 
     /**
@@ -47,7 +83,16 @@ class AcademicSessionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $session = AcademicSession::findOrFail($id)->update($request->all());
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'session' => $session,
+            ],
+        ];
+
+        return response($response);
     }
 
     /**
@@ -58,6 +103,15 @@ class AcademicSessionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $session = AcademicSession::findOrFail($id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'data' => [
+                'session' => $session
+            ]
+        ];
+
+        return response($response, 204);
     }
 }
